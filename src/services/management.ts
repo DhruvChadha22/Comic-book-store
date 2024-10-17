@@ -16,7 +16,7 @@ export const handleCreateComic = async (body: CreateData) => {
     });
 
     if (existingComic) {
-        throw createHttpError(400, "Comic already exists");
+        throw createHttpError(409, "Comic already exists");
     }
 
     const data = await prisma.comicBooks.create({

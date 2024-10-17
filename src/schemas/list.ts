@@ -14,6 +14,8 @@ export const listComicsSchema = z.object({
         price: z.enum(["asc", "desc"]),
         year: z.enum(["asc", "desc"]),
         bookName: z.enum(["asc", "desc"]),
-        numOfPages: z.enum(["asc", "desc"]),
     }).partial(),
-}).partial();
+}).partial().required({
+    page: true,
+    limit: true,
+});

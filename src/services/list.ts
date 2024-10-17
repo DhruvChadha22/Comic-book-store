@@ -1,46 +1,37 @@
-import createHttpError from "http-errors";
 import { z } from "zod";
 import { prisma } from "../db/index";
 import { listComicsSchema } from "../schemas/list";
 
 type Data = z.infer<typeof listComicsSchema>;
 
-export const handleGetComicsList = async (body: Data) => {
-    //Orderby object should only have one record
-    if (body.orderBy && Object.keys(body.orderBy).length > 1) {
-        throw createHttpError(400, "Only one sorting condition should be provided");
-    }
-
-    const page = body.page || 1;
-    const limit = body.limit || 5;
-    
+export const handleGetComicsList = async (options: Data) => {
     //Calculating the starting index of the paginated results
-    const startIndex = (page - 1) * limit;
+    const startIndex = (options.page - 1) * options.limit;
 
     //Counting the total records of the filtered data to calculate total pages
     const total = await prisma.comicBooks.count({
         where: {
-            ...body.filterBy,
+            ...options.filterBy,
         },
     });
 
     //Retrieving the paginated data
     const comicsList = await prisma.comicBooks.findMany({
         skip: startIndex,
-        take: limit,
+        take: options.limit,
         where: {
-            ...body.filterBy,
+            ...options.filterBy,
         },
         orderBy: {
-            ...body.orderBy,
+            ...options.orderBy,
         },
     });
 
     return {
-        page,
-        limit,
+        page: options.page,
+        limit: options.limit,
         total,
-        pages: Math.ceil(total / limit),
+        pages: Math.ceil(total / options.limit),
         data: comicsList
     };
 };
