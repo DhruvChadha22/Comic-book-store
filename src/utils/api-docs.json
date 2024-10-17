@@ -1,0 +1,381 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "Comic book API",
+    "description": "The API collection for comic book store"
+  },
+  "paths": {
+    "/manage/create": {
+      "post": {
+        "tags": [
+          "Create a comic"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateComicInput"
+              },
+              "example": {
+                "bookName": "The Silent Sentinel",
+                "author": "Peter Whitman",
+                "year": 2024,
+                "price": 17.49,
+                "numOfPages": 260,
+                "condition": "new"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComicResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/manage/edit": {
+      "patch": {
+        "tags": [
+          "Edit a comic"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditComicInput"
+              },
+              "example": {
+                "bookName": "The Silent Sentinel",
+                "price": 10.99,
+                "discount": 15,
+                "condition": "used"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComicResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Comic not found"
+          }
+        }
+      }
+    },
+    "/manage/delete": {
+      "delete": {
+        "tags": [
+          "Delete a comic"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeleteComicInput"
+              },
+              "example": {
+                "bookName": "The Silent Sentinel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComicResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          },
+          "404": {
+            "description": "Comic not found"
+          }
+        }
+      }
+    },
+    "/list": {
+      "get": {
+        "tags": [
+          "Fetch inventory list"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "author",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "year",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "price",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "condition",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "sortBy",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "order",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListComicResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      }
+    },
+    "/details/{comicId}": {
+      "get": {
+        "tags": [
+          "Get comic details"
+        ],
+        "parameters": [
+          {
+            "name": "comicId",
+            "in": "path",
+            "description": "The id of the comic",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ComicResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Comic not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateComicInput": {
+        "type": "object",
+        "required": [
+          "bookName",
+          "author",
+          "year",
+          "price",
+          "numOfPages",
+          "condition"
+        ],
+        "properties": {
+          "bookName": {
+            "type": "string"
+          },
+          "author": {
+            "type": "string"
+          },
+          "year": {
+            "type": "number"
+          },
+          "price": {
+            "type": "number"
+          },
+          "discount": {
+            "type": "number"
+          },
+          "numOfPages": {
+            "type": "number"
+          },
+          "condition": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "EditComicInput": {
+        "type": "object",
+        "required": [
+          "bookName"
+        ],
+        "properties": {
+          "bookName": {
+            "type": "string"
+          },
+          "author": {
+            "type": "string"
+          },
+          "year": {
+            "type": "number"
+          },
+          "price": {
+            "type": "number"
+          },
+          "discount": {
+            "type": "number"
+          },
+          "numOfPages": {
+            "type": "number"
+          },
+          "condition": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "DeleteComicInput": {
+        "type": "object",
+        "required": [
+          "bookName"
+        ],
+        "properties": {
+          "bookName": {
+            "type": "string"
+          }
+        }
+      },
+      "ComicResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "bookName": {
+            "type": "string"
+          },
+          "author": {
+            "type": "string"
+          },
+          "year": {
+            "type": "number"
+          },
+          "price": {
+            "type": "number"
+          },
+          "discount": {
+            "type": "number"
+          },
+          "numOfPages": {
+            "type": "number"
+          },
+          "condition": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      },
+      "ListComicResponse": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "number"
+          },
+          "limit": {
+            "type": "number"
+          },
+          "total": {
+            "type": "number"
+          },
+          "pages": {
+            "type": "number"
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ComicResponse"
+            }
+          }
+        }
+      }
+    }
+  }
+}
